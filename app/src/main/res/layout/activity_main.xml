@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <carousel.uz.mukhammadakbar.lib.Carousel
+    <carousel.uz.mukhammadakbar.Carousel
         android:id="@+id/carousel"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="20dp"/>
 
-    <carousel.uz.mukhammadakbar.lib.TouchImageView
+    <carousel.uz.mukhammadakbar.TouchImageView
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:srcCompat="@drawable/nature1"/>
