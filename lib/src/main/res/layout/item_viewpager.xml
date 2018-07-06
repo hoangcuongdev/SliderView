@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <carousel.uz.mukhammadakbar.lib.TouchImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageView"
         android:scaleType="fitCenter"
         android:layout_width="match_parent"
