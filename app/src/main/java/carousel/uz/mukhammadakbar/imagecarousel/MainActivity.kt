@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCarousels() {
-        carousel.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.nature1))
-        carousel.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.nature2))
-        carousel.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.nature3))
+        carousel.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.product_fake2))
+        carousel.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.product_fake))
+        carousel.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.product_fake))
     }
 }

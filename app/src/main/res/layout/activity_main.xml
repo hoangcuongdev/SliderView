@@ -8,11 +8,11 @@
     <carousel.uz.mukhammadakbar.SliderView
         android:id="@+id/carousel"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="240dp"
         android:layout_marginTop="20dp"
-        app:sliderHeight="180dp"
-        app:dotsDefaultColor="#534943"
-        app:dotsSelectedColor="#eeff00"
+        app:sliderHeight="200dp"
+        app:dotsDefaultColor="#c1c1c1"
+        app:dotsSelectedColor="#263238"
         app:dotsRadius="4dp"
         app:dotsPadding="3dp"/>
 

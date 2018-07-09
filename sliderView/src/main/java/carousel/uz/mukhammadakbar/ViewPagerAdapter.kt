@@ -6,9 +6,13 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import carousel.uz.mukhammadakbar.lib.R
 import com.bumptech.glide.Glide
 
@@ -30,19 +34,30 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val inflater : LayoutInflater = context.applicationContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val itemView = inflater.inflate(R.layout.item_viewpager, container, false)
 
-        val imageView = itemView.findViewById<AppCompatImageView>(R.id.imageView)
+        val linear = LinearLayout(context).apply {
+            layoutParams = LinearLayout
+                    .LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT)
+            gravity = Gravity.CENTER
+        }
+
+        val imageView = ImageView(context).apply {
+            layoutParams = LinearLayout
+                    .LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+        }.also { linear.addView(it) }
 
         when(imageList[position]){
             is Drawable ->imageView.setImageDrawable(imageList[position] as Drawable)
             is String -> Glide.with(context).load(imageList[position]).into(imageView)
             else -> throw Exception("mukhammadakbar.uz.SliderView", Throwable("Error while loading image"))
         }
-        container.addView(itemView)
-        return itemView
+        container.addView(linear)
+        return linear
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
