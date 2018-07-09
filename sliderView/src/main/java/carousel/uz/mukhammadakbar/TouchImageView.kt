@@ -16,21 +16,21 @@ class TouchImageView : android.support.v7.widget.AppCompatImageView {
     internal lateinit var matrix: Matrix
     internal var mode = NONE
 
-    internal var last = PointF()
+    private var last = PointF()
     internal var start = PointF()
     internal var minScale = 1f
     internal var maxScale = 3f
-    internal lateinit var m: FloatArray
+    private lateinit var m: FloatArray
 
     internal var viewWidth: Int = 0
     internal var viewHeight: Int = 0
     internal var saveScale = 1f
-    protected var origWidth: Float = 0.toFloat()
-    protected var origHeight: Float = 0.toFloat()
-    internal var oldMeasuredWidth: Int = 0
-    internal var oldMeasuredHeight: Int = 0
+    private var origWidth: Float = 0.toFloat()
+    private var origHeight: Float = 0.toFloat()
+    private var oldMeasuredWidth: Int = 0
+    private var oldMeasuredHeight: Int = 0
 
-    internal lateinit var mScaleDetector: ScaleGestureDetector
+    private lateinit var mScaleDetector: ScaleGestureDetector
 
     internal lateinit var context: Context
 
@@ -51,7 +51,7 @@ class TouchImageView : android.support.v7.widget.AppCompatImageView {
         imageMatrix = matrix
         scaleType = ImageView.ScaleType.MATRIX
 
-        setOnTouchListener { v, event ->
+        setOnTouchListener { _, event ->
             mScaleDetector.onTouchEvent(event)
             val curr = PointF(event.x, event.y)
 
@@ -137,7 +137,7 @@ class TouchImageView : android.support.v7.widget.AppCompatImageView {
             matrix.postTranslate(fixTransX, fixTransY)
     }
 
-    internal fun getFixTrans(trans: Float, viewSize: Float, contentSize: Float): Float {
+    private fun getFixTrans(trans: Float, viewSize: Float, contentSize: Float): Float {
         val minTrans: Float
         val maxTrans: Float
 
@@ -154,7 +154,7 @@ class TouchImageView : android.support.v7.widget.AppCompatImageView {
         return if (trans > maxTrans) -trans + maxTrans else 0f
     }
 
-    internal fun getFixDragTrans(delta: Float, viewSize: Float, contentSize: Float): Float {
+    private fun getFixDragTrans(delta: Float, viewSize: Float, contentSize: Float): Float {
         return if (contentSize <= viewSize) {
             0f
         } else delta
@@ -209,9 +209,9 @@ class TouchImageView : android.support.v7.widget.AppCompatImageView {
 
     companion object {
         // We can be in one of these 3 states
-        internal val NONE = 0
-        internal val DRAG = 1
-        internal val ZOOM = 2
-        internal val CLICK = 3
+        internal const val NONE = 0
+        internal const val DRAG = 1
+        internal const val ZOOM = 2
+        internal const val CLICK = 3
     }
 }

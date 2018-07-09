@@ -36,11 +36,10 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
         val imageView = itemView.findViewById<AppCompatImageView>(R.id.imageView)
 
-        Log.d("addImageView", "glide: ${imageList.size}")
         when(imageList[position]){
             is Drawable ->imageView.setImageDrawable(imageList[position] as Drawable)
             is String -> Glide.with(context).load(imageList[position]).into(imageView)
-            else -> throw Exception("mukhammadakbar.uz.Carousel", Throwable("Error while loading image"))
+            else -> throw Exception("mukhammadakbar.uz.SliderView", Throwable("Error while loading image"))
         }
         container.addView(itemView)
         return itemView

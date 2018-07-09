@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="SliderView">
+        <attr name="dotsRadius" format="dimension"/>
+        <attr name="dotsPadding" format="dimension"/>
+        <attr name="sliderHeight" format="dimension"/>
+        <attr name="dotsDefaultColor" format="color"/>
+        <attr name="dotsSelectedColor" format="color"/>
+    </declare-styleable>
+
+</resources>
