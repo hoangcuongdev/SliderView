@@ -14,7 +14,7 @@ allprojects {
 }
 
 dependencies {
-	implementation 'com.github.markizdeviler:SliderView:0.0.2'
+	implementation 'com.github.markizdeviler:SliderView:0.0.3'
 }
 ``` 
 
@@ -24,7 +24,12 @@ dependencies {
 <carousel.uz.mukhammadakbar.SliderView
             android:id="@+id/sliderView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"/>
+     	    android:layout_height="230dp"
+	    app:sliderHeight="200dp"  //optional dots layout stays after sliderView
+            app:dotsDefaultColor="@color/default"
+            app:dotsSelectedColor="@color/selected"
+            app:dotsRadius="4dp"
+            app:dotsPadding="3dp"/>
 ```
 
 #### Any Issues & contributions appreciated
