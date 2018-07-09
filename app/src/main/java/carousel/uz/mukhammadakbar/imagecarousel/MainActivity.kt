@@ -2,16 +2,26 @@ package carousel.uz.mukhammadakbar.imagecarousel
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.View
+import android.view.animation.Animation
 import kotlinx.android.synthetic.main.activity_main.*
+import android.view.animation.ScaleAnimation
+
+
 
 class MainActivity : AppCompatActivity() {
+
+    var isScrolled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initCarousel()
         initCarousels()
+        carousel.attachToScrollView(nestedScrollView)
     }
 
     private fun initCarousel() {

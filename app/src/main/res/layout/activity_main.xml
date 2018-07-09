@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <carousel.uz.mukhammadakbar.SliderView
-        android:id="@+id/carousel"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginTop="20dp"
-        app:sliderHeight="200dp"
-        app:dotsDefaultColor="#c1c1c1"
-        app:dotsSelectedColor="#263238"
-        app:dotsRadius="4dp"
-        app:dotsPadding="3dp"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <carousel.uz.mukhammadakbar.TouchImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:srcCompat="@drawable/nature1"/>
+        <carousel.uz.mukhammadakbar.SliderView
+            android:id="@+id/carousel"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            app:dotsDefaultColor="#c1c1c1"
+            app:dotsSelectedColor="#263238"
+            app:dotsPadding="3dp"
+            app:dotsRadius="4dp"
+            app:sliderHeight="200dp" />
 
-</LinearLayout>
+        <carousel.uz.mukhammadakbar.TouchImageView
+            android:id="@+id/img"
+            android:layout_below="@+id/carousel"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:srcCompat="@drawable/nature1" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_below="@id/img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="6sp"
+            android:text="After the French Revolution and the Napoleonic Wars from 1803–1815, feudalism fell away and liberalism and nationalism clashed with reaction. The German revolutions of 1848–49 failed. The Industrial Revolution modernized the German economy, led to the rapid growth of cities and to the emergence of the Socialist movement in Germany. Prussia, with its capital Berlin, grew in power. German universities became world-class centers for science and humanities, while music and art flourished. The Unification of Germany (excluding Austria and the German-speaking areas of Switzerland) was achieved under the leadership of the Chancellor Otto von Bismarck with the formation of the German Empire in 1871 which solved the Kleindeutsche Lösung, the small Germany solution (Germany without Austria), or Großdeutsche Lösung, the greater Germany solution (Germany with Austria), the former prevailing. The new Reic" />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -4,49 +4,49 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
-import android.support.v7.widget.CardView
+import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
 import android.util.Log
-import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.RelativeLayout
 import carousel.uz.mukhammadakbar.lib.R
 
 class SliderView : RelativeLayout {
 
     private val viewpager = ViewPager(context)
-    private val linear = LinearLayout(context)
+    private lateinit var dotsLayout : DotsView
     private var pagerAdapter: ViewPagerAdapter = ViewPagerAdapter(context)
-    private val dots: ArrayList<CardView> = ArrayList()
+    private lateinit var nestedScrollView: NestedScrollView
     private var sliderHeight: Float? = null
-    private var defaultColor: Int? = null
-    private var selectedColor: Int? = null
-    private var dotsRadius: Float? = null
-    private var dotsPadding: Float? = null
+    private var isScrolled = false
+    var DURATION = 400.toLong()
+    var SCALE_X: Float = 0.8f
+    var SCALE_Y: Float = 0.8f
 
+    constructor(context: Context)
+            : super(context) { init(context, null) }
 
-    constructor(context: Context) : super(context) { init(context, null) }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        Log.d("attr", attrs.toString())
-
-        init(context, attrs)
-    }
+    constructor(context: Context, attrs: AttributeSet)
+            : super(context, attrs) { init(context, attrs) }
 
     private fun init(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SliderView)
             sliderHeight = a.getDimension(R.styleable.SliderView_sliderHeight, ViewGroup.LayoutParams.MATCH_PARENT.toFloat())
-            dotsRadius = a.getDimension(R.styleable.SliderView_dotsRadius, 10f)
-            dotsPadding = a.getDimension(R.styleable.SliderView_dotsPadding, 10f)
-            defaultColor = a.getColor(R.styleable.SliderView_dotsDefaultColor, ContextCompat.getColor(context, R.color.default_dots_color))
-            selectedColor = a.getColor(R.styleable.SliderView_dotsSelectedColor, ContextCompat.getColor(context, R.color.default_dots_color))
+            dotsLayout = DotsView(
+                    context,
+                    dotsRadius = a.getDimension(R.styleable.SliderView_dotsRadius, 10f),
+                    dotsPadding = a.getDimension(R.styleable.SliderView_dotsPadding, 10f),
+                    defaultColor = a.getColor(R.styleable.SliderView_dotsDefaultColor, ContextCompat.getColor(context, R.color.default_dots_color)),
+                    selectedColor = a.getColor(R.styleable.SliderView_dotsSelectedColor, ContextCompat.getColor(context, R.color.default_dots_color)))
             a.recycle()
         }
 
         addViewPager()
-        addIndicatorLayout()
+        addDotsLayout()
         initViewpagerListener()
     }
 
@@ -58,8 +58,8 @@ class SliderView : RelativeLayout {
         viewpager.offscreenPageLimit = 5
     }
 
-    private fun addIndicatorLayout() {
-        linear.layoutParams = RelativeLayout
+    private fun addDotsLayout() {
+        dotsLayout.layoutParams = RelativeLayout
                 .LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -68,8 +68,7 @@ class SliderView : RelativeLayout {
                     addRule(RelativeLayout.CENTER_HORIZONTAL)
                     bottomMargin = 10
                 }
-        linear.orientation = LinearLayout.HORIZONTAL
-        addView(linear)
+        addView(dotsLayout)
         invalidate()
     }
 
@@ -78,60 +77,47 @@ class SliderView : RelativeLayout {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                selectDot(position)
+                dotsLayout.selectDot(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
     }
 
-    private fun addDots() {
-        for (i in 0 until pagerAdapter.count) {
-            if (dots.size >= pagerAdapter.count) return
-            val dot = CardView(context)
-            dot.radius = dotsRadius?:10f
-            dot.setCardBackgroundColor(ContextCompat.getColor(context, R.color.default_dots_color))
-
-            val params = LinearLayout.LayoutParams(
-                    2*(dotsRadius?:10f).toInt(),
-                    2*(dotsRadius?:10f).toInt())
-                    .apply { gravity = Gravity.CENTER
-                    setMargins(dotsPadding?.toInt()?: 10,10,dotsPadding?.toInt()?:10,10)}
-            linear.addView(dot, params)
-            dots.add(dot)
-        }
-        invalidate()
-        this.toString()
-        selectDot(0)
-    }
-
-    fun selectDot(idx: Int) {
-        for (i in 0 until pagerAdapter.count) {
-            val colorId = if (i == idx) {
-                selectedColor?: ContextCompat.getColor(context, R.color.selected_dots_color)
-            } else {
-                defaultColor?: ContextCompat.getColor(context, R.color.default_dots_color)
-            }
-            dots[i].setCardBackgroundColor(colorId)
-        }
-    }
-
     fun addImage(drawable: Drawable?=null,imageUrl: String?=null ,imageUrls: ArrayList<String>? =null){
         pagerAdapter.addImage(drawable, imageUrl, imageUrls)
         viewpager.adapter = pagerAdapter
-        addDots()
+        dotsLayout.addDots(pagerAdapter.count)
+        invalidate()
     }
 
-    fun changeDotsColor(defaultColor: Int? = null, selectedColor: Int? = null){
-        this.defaultColor = defaultColor
-        this.selectedColor = selectedColor
+    fun attachToScrollView(scrollView: NestedScrollView){
+        nestedScrollView = scrollView
+        initScrollingListener()
+    }
 
-        if (defaultColor != null) {
-            dots.map {
-                it.setCardBackgroundColor(defaultColor)
+    private fun initScrollingListener() {
+        nestedScrollView.setOnScrollChangeListener { nestedScrollView: NestedScrollView?, x: Int, y: Int, oldX: Int, oldY: Int ->
+            if (y - oldY > 0 && !isScrolled){ // scroll to bottom
+                scaleView(this, 1f, SCALE_X, 1f, SCALE_Y)
+                isScrolled = true
+            }
+            if(y - oldY < 0 && isScrolled){ // scroll to top
+                scaleView(this,  SCALE_X, 1f, SCALE_Y, 1f)
+                isScrolled = false
             }
         }
-        selectDot(0)
-        invalidate()
+    }
+
+    private fun scaleView(v: View, startScaleX: Float, endScaleX: Float,
+                          startScaleY: Float, endScaleY: Float) {
+        val anim = ScaleAnimation(
+                startScaleY, endScaleY, // Start and end values for the X axis scaling
+                startScaleX, endScaleX, // Start and end values for the Y axis scaling
+                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                Animation.RELATIVE_TO_SELF, 0.5f) // Pivot point of Y scaling
+        anim.fillAfter = true // Needed to keep the result of the animation
+        anim.duration = DURATION
+        v.startAnimation(anim)
     }
 }
