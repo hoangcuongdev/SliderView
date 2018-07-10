@@ -2,11 +2,12 @@ package carousel.uz.mukhammadakbar
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -19,7 +20,7 @@ class SliderView : RelativeLayout {
     private val viewpager = ViewPager(context)
     private lateinit var dotsLayout : DotsView
     private var pagerAdapter: ViewPagerAdapter = ViewPagerAdapter(context)
-    private lateinit var nestedScrollView: NestedScrollView
+    private lateinit var scrollView: View
     private var sliderHeight: Float? = null
     private var isScrolled = false
     var DURATION = 400.toLong()
@@ -92,12 +93,30 @@ class SliderView : RelativeLayout {
     }
 
     fun attachToScrollView(scrollView: NestedScrollView){
-        nestedScrollView = scrollView
-        initScrollingListener()
+        initScrollingListener(scrollView)
     }
 
-    private fun initScrollingListener() {
-        nestedScrollView.setOnScrollChangeListener { nestedScrollView: NestedScrollView?, x: Int, y: Int, oldX: Int, oldY: Int ->
+    fun attachToAppBar(appBar: AppBarLayout){
+        initScrollingListener(appBar)
+    }
+
+    private fun initScrollingListener(scrollView: AppBarLayout) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            scrollView.setOnScrollChangeListener { nestedScrollView: View, x: Int, y: Int, oldX: Int, oldY: Int ->
+                if (y - oldY > 0 && !isScrolled && y > 70) { // scroll to bottom
+                    scaleView(this, 1f, SCALE_X, 1f, SCALE_Y)
+                    isScrolled = true
+                }
+                if (y - oldY < 0 && isScrolled && y > 70) { // scroll to top
+                    scaleView(this, SCALE_X, 1f, SCALE_Y, 1f)
+                    isScrolled = false
+                }
+            }
+        }
+    }
+
+    private fun initScrollingListener(scrollView: NestedScrollView) {
+        scrollView.setOnScrollChangeListener {nestedScrollView: NestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int ->
             if (y - oldY > 0 && !isScrolled){ // scroll to bottom
                 scaleView(this, 1f, SCALE_X, 1f, SCALE_Y)
                 isScrolled = true
