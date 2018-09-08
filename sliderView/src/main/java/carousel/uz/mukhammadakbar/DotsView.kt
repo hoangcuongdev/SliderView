@@ -22,7 +22,9 @@ class DotsView : LinearLayout {
 
     constructor(context: Context):super(context)
 
-    constructor(context: Context, attrs: AttributeSet?):super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?):super(context, attrs){
+        init()
+    }
 
     constructor(context: Context,
                 defaultColor: Int?,
@@ -30,13 +32,13 @@ class DotsView : LinearLayout {
                 dotsRadius: Float?,
                 dotsPadding: Float?): super(context) {
         this.defaultColor = defaultColor?: ContextCompat.getColor(context, R.color.default_dots_color)
-        this.selectedColor = selectedColor?: ContextCompat.getColor(context, R.color.selected_dots_color)
+        this.selectedColor = selectedColor?: ContextCompat.getColor(context, R.color.colorWhite)
         this.dotsRadius = dotsRadius?: 10f
         this.dotsPadding = dotsPadding?: 10f
-        init(context, null)
+        init()
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
+    private fun init() {
         orientation = LinearLayout.HORIZONTAL
     }
 
@@ -69,11 +71,9 @@ class DotsView : LinearLayout {
         }
         invalidate()
         selectDot(0)
-        Log.d("dotsCount", "$count: ${dots.size}")
-        Log.d("dotsRadius", "dotsR: $dotsRadius")
     }
 
-    @Deprecated(message = "this method will be optimized, permanently use this method")
+    @Deprecated(message = "need to optimization, temporarily use this method")
     fun changeDotsColor(defaultColor: Int? = null, selectedColor: Int? = null){
         if (selectedColor != null) this.selectedColor = selectedColor
         if (defaultColor != null) {

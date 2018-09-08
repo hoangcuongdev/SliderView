@@ -2,16 +2,10 @@ package carousel.uz.mukhammadakbar
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.support.design.widget.AppBarLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
-import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.ScaleAnimation
 import android.widget.RelativeLayout
 import carousel.uz.mukhammadakbar.lib.R
 
@@ -20,12 +14,7 @@ class SliderView : RelativeLayout {
     private val viewpager = ViewPager(context)
     private lateinit var dotsLayout : DotsView
     private var pagerAdapter: ViewPagerAdapter = ViewPagerAdapter(context)
-    private lateinit var scrollView: View
     private var sliderHeight: Float? = null
-    private var isScrolled = false
-    var DURATION = 400.toLong()
-    var SCALE_X: Float = 0.8f
-    var SCALE_Y: Float = 0.8f
 
     constructor(context: Context)
             : super(context) { init(context, null) }
@@ -37,8 +26,7 @@ class SliderView : RelativeLayout {
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SliderView)
             sliderHeight = a.getDimension(R.styleable.SliderView_sliderHeight, ViewGroup.LayoutParams.MATCH_PARENT.toFloat())
-            dotsLayout = DotsView(
-                    context,
+            dotsLayout = DotsView(context,
                     dotsRadius = a.getDimension(R.styleable.SliderView_dotsRadius, 10f),
                     dotsPadding = a.getDimension(R.styleable.SliderView_dotsPadding, 10f),
                     defaultColor = a.getColor(R.styleable.SliderView_dotsDefaultColor, ContextCompat.getColor(context, R.color.default_dots_color)),
@@ -57,6 +45,8 @@ class SliderView : RelativeLayout {
                 sliderHeight?.toInt()?: ViewGroup.LayoutParams.MATCH_PARENT)
         addView(viewpager)
         viewpager.offscreenPageLimit = 5
+        viewpager.setPageTransformer(true, ParallaxPageTransformer())
+        viewpager.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
     }
 
     private fun addDotsLayout() {
@@ -81,7 +71,9 @@ class SliderView : RelativeLayout {
                 dotsLayout.selectDot(position)
             }
 
-            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
         })
     }
 
@@ -90,53 +82,5 @@ class SliderView : RelativeLayout {
         viewpager.adapter = pagerAdapter
         dotsLayout.addDots(pagerAdapter.count)
         invalidate()
-    }
-
-    fun attachToScrollView(scrollView: NestedScrollView){
-        initScrollingListener(scrollView)
-    }
-
-    fun attachToAppBar(appBar: AppBarLayout){
-        initScrollingListener(appBar)
-    }
-
-    private fun initScrollingListener(scrollView: AppBarLayout) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            scrollView.setOnScrollChangeListener { nestedScrollView: View, x: Int, y: Int, oldX: Int, oldY: Int ->
-                if (y - oldY > 0 && !isScrolled && y > 70) { // scroll to bottom
-                    scaleView(this, 1f, SCALE_X, 1f, SCALE_Y)
-                    isScrolled = true
-                }
-                if (y - oldY < 0 && isScrolled && y > 70) { // scroll to top
-                    scaleView(this, SCALE_X, 1f, SCALE_Y, 1f)
-                    isScrolled = false
-                }
-            }
-        }
-    }
-
-    private fun initScrollingListener(scrollView: NestedScrollView) {
-        scrollView.setOnScrollChangeListener {nestedScrollView: NestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int ->
-            if (y - oldY > 0 && !isScrolled){ // scroll to bottom
-                scaleView(this, 1f, SCALE_X, 1f, SCALE_Y)
-                isScrolled = true
-            }
-            if(y - oldY < 0 && isScrolled){ // scroll to top
-                scaleView(this,  SCALE_X, 1f, SCALE_Y, 1f)
-                isScrolled = false
-            }
-        }
-    }
-
-    private fun scaleView(v: View, startScaleX: Float, endScaleX: Float,
-                          startScaleY: Float, endScaleY: Float) {
-        val anim = ScaleAnimation(
-                startScaleY, endScaleY, // Start and end values for the X axis scaling
-                startScaleX, endScaleX, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f) // Pivot point of Y scaling
-        anim.fillAfter = true // Needed to keep the result of the animation
-        anim.duration = DURATION
-        v.startAnimation(anim)
     }
 }

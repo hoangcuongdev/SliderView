@@ -1,7 +1,6 @@
 package carousel.uz.mukhammadakbar.imagecarousel;
 
 
-import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -20,7 +19,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.swipeLeft;
-import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -38,7 +36,7 @@ public class MainActivityTest {
     public void mainActivityTest() {
         ViewInteraction viewPager = onView(
                 allOf(childAtPosition(
-                        allOf(withId(R.id.carousel),
+                        allOf(withId(R.id.sliderView),
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
                                         0)),
@@ -48,7 +46,7 @@ public class MainActivityTest {
 
         ViewInteraction linear = onView(
                 allOf(childAtPosition(
-                        allOf(withId(R.id.carousel),
+                        allOf(withId(R.id.sliderView),
                                 childAtPosition(
                                         withClassName(is("android.widget.ImageView")),
                                         0)),

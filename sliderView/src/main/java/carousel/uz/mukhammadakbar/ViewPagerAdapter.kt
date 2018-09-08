@@ -2,29 +2,34 @@ package carousel.uz.mukhammadakbar
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
-import android.util.Log
+import android.support.v7.widget.AppCompatTextView
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
+import android.view.animation.RotateAnimation
+import android.webkit.URLUtil
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import carousel.uz.mukhammadakbar.lib.R
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import java.io.FileNotFoundException
 
 class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
-    var imageList = ArrayList<Any>()
+    private var imageList = ArrayList<Any>()
 
     override fun getCount(): Int = imageList.size
 
     override fun isViewFromObject(p0: View, p1: Any): Boolean = p0 == p1
-
-    fun getDrawable(position: Int) = imageList[position]
 
     fun addImage(drawable: Drawable?=null,imageUrl: String?=null ,imageUrls: ArrayList<String>? =null) {
         drawable?.let { imageList.add(it) }
@@ -34,30 +39,112 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-
-        val linear = LinearLayout(context).apply {
-            layoutParams = LinearLayout
+        val root = FrameLayout(context).apply {
+            layoutParams = FrameLayout
                     .LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT)
-            gravity = Gravity.CENTER
+            setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
         }
 
-        val imageView = ImageView(context).apply {
-            layoutParams = LinearLayout
+
+        val backgroundView = BlurImageView(context).apply {
+            layoutParams = FrameLayout
+                    .LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT).apply {
+                        gravity = Gravity.CENTER
+                    }
+            scaleType = ImageView.ScaleType.FIT_XY
+        }.also { root.addView(it) }
+
+        val imageView = ZoomImageView(context).apply {
+            layoutParams = FrameLayout
                     .LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT)
+                            ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER
+                    }
             scaleType = ImageView.ScaleType.FIT_CENTER
-        }.also { linear.addView(it) }
+        }.also { root.addView(it) }
 
-        when(imageList[position]){
-            is Drawable ->imageView.setImageDrawable(imageList[position] as Drawable)
-            is String -> Glide.with(context).load(imageList[position]).into(imageView)
-            else -> throw Exception("mukhammadakbar.uz.SliderView", Throwable("Error while loading image"))
+        val animRotate = RotateAnimation(0f, 359f,
+                RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+                RotateAnimation.RELATIVE_TO_SELF, 0.5f)
+
+        animRotate.duration = 700
+        animRotate.interpolator = LinearInterpolator()
+        animRotate.repeatCount = RotateAnimation.INFINITE
+        animRotate.fillAfter = true
+
+        val progressBar = AppCompatImageView(context).apply {
+            layoutParams = FrameLayout
+                    .LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER
+                    }
+            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_loading))
+            animation = animRotate
+        }.also { root.addView(it) }
+
+
+        val loadingText = AppCompatTextView(context).apply {
+            layoutParams = FrameLayout
+                    .LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER
+                        topMargin = 40
+                    }
+            text = context.getString(R.string.loading)
+        }.also { root.addView(it) }
+
+
+
+        when (imageList[position]) {
+            is Drawable -> {
+                progressBar.visible(false)
+                loadingText.visible(false)
+                imageView.setImageDrawable(imageList[position] as Drawable)
+                backgroundView.setImageDrawable(imageList[position] as Drawable)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    backgroundView.setBlur()
+                }
+            }
+            is String -> {
+                if (URLUtil.isValidUrl(imageList[position] as String)) {
+                    Glide.with(context).load(imageList[position])
+                            .listener(object : RequestListener<Drawable> {
+                                override fun onLoadFailed(exc: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                    if (exc?.causes?.any { it is FileNotFoundException } == true) {
+                                        progressBar.clearAnimation()
+                                        progressBar.visible(false)
+                                        loadingText.visible(false)
+                                    }
+                                    return false
+                                }
+
+                                override fun onResourceReady(resource: Drawable?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                    progressBar.clearAnimation()
+                                    progressBar.visible(false)
+                                    loadingText.visible(false)
+                                    backgroundView.setImageDrawable(resource)
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                        backgroundView.setBlur()
+                                    }
+                                    return false
+                                }
+                            }).into(imageView)
+                } else
+                    throw Exception("mukhammadakbar.uz.SliderView",
+                            Throwable("Image url is not valid, check image url"))
+            }
+            else -> throw Exception("mukhammadakbar.uz.SliderView",
+                    Throwable("Error while loading image"))
         }
-        container.addView(linear)
-        return linear
+        container.addView(root)
+        return root
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
