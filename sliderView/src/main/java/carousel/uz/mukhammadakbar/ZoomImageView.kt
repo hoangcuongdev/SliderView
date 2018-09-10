@@ -12,7 +12,13 @@ class ZoomImageView(context: Context): AppCompatImageView(context){
     private var isDoubleTap: Boolean = false
     private var isScaled: Boolean = false
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
+    init {
+        setOnClickListener { onClick() }
+    }
+
+
+
+    fun onClick() {
         if (isDoubleTap) {
             if (!isScaled)
                 startAnimation(zoomAnimation(DEFAULT_SCALE, MAX_SCALE))
@@ -20,8 +26,6 @@ class ZoomImageView(context: Context): AppCompatImageView(context){
             isScaled = !isScaled
         }
         isDoubleTap = !isDoubleTap
-        performClick()
-        return super.onTouchEvent(event)
     }
 
     private fun zoomAnimation(startScale: Float, endScale: Float): ScaleAnimation = ScaleAnimation(
@@ -31,6 +35,13 @@ class ZoomImageView(context: Context): AppCompatImageView(context){
             fillAfter = true
             duration = 300
         }
+
+    fun setDefaultState(){
+        if (!isScaled)
+            startAnimation(zoomAnimation(DEFAULT_SCALE, DEFAULT_SCALE))
+        else startAnimation(zoomAnimation(MAX_SCALE, DEFAULT_SCALE))
+        isScaled = false
+    }
 
     override fun performClick(): Boolean {
         super.performClick()

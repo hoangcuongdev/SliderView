@@ -60,13 +60,10 @@ class BlurImageView(context: Context) : AppCompatImageView(context) {
         val numPixels = img.width * img.height
         val pixels = IntArray(numPixels)
 
-        //Get JPEG pixels.  Each int is the color values for one pixel.
         img.getPixels(pixels, 0, img.width, 0, 0, img.width, img.height)
 
-        //Create a Bitmap of the appropriate format.
         val result = Bitmap.createBitmap(img.width, img.height, Bitmap.Config.ARGB_8888)
 
-        //Set RGB pixels.
         result.setPixels(pixels, 0, result.width, 0, 0, result.width, result.height)
         return result
     }

@@ -21,7 +21,7 @@
             app:dotsDefaultColor="#c1c1c1"
             app:dotsSelectedColor="#263238"
             app:dotsPadding="3dp"
-            app:dotsRadius="4dp" />
+            app:dotsRadius="4dp"/>
 
         <carousel.uz.mukhammadakbar.TouchImageView
             android:id="@+id/img"

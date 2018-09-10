@@ -8,6 +8,7 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.AppCompatTextView
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -27,18 +28,39 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
     private var imageList = ArrayList<Any>()
 
+    private var margin: Int = 0
+    private var isBlurVisible = false
+
     override fun getCount(): Int = imageList.size
 
     override fun isViewFromObject(p0: View, p1: Any): Boolean = p0 == p1
 
     fun addImage(drawable: Drawable?=null,imageUrl: String?=null ,imageUrls: ArrayList<String>? =null) {
+        imageList.firstOrNull{it is MockObject}.also { imageList.remove(it) }
         drawable?.let { imageList.add(it) }
         imageUrls?.let {imageList.add(it) }
         imageUrl?.let { imageList.add(it) }
         notifyDataSetChanged()
     }
 
+    fun setImageMargin(margin: Int){
+        this.margin = margin
+        notifyDataSetChanged()
+    }
+
+    fun addMockObject(mockObject: MockObject){
+        imageList.add(mockObject)
+        Log.d("addMockObject", "addMockObject")
+        notifyDataSetChanged()
+    }
+
+    fun hideBlurBackground(){
+        isBlurVisible = false
+        notifyDataSetChanged()
+    }
+
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        Log.d("addMockObject", "instantiateItem")
         val root = FrameLayout(context).apply {
             layoutParams = FrameLayout
                     .LayoutParams(
@@ -46,7 +68,6 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                             ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
         }
-
 
         val backgroundView = BlurImageView(context).apply {
             layoutParams = FrameLayout
@@ -57,6 +78,7 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                     }
             scaleType = ImageView.ScaleType.FIT_XY
         }.also { root.addView(it) }
+        backgroundView.visible(isBlurVisible)
 
         val imageView = ZoomImageView(context).apply {
             layoutParams = FrameLayout
@@ -64,6 +86,7 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                         gravity = Gravity.CENTER
+                        setMargins(margin, margin, margin, 2*margin)
                     }
             scaleType = ImageView.ScaleType.FIT_CENTER
         }.also { root.addView(it) }
@@ -99,8 +122,6 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                     }
             text = context.getString(R.string.loading)
         }.also { root.addView(it) }
-
-
 
         when (imageList[position]) {
             is Drawable -> {
@@ -139,6 +160,12 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                 } else
                     throw Exception("mukhammadakbar.uz.SliderView",
                             Throwable("Image url is not valid, check image url"))
+            }
+
+            is MockObject -> {
+                //do Nothing
+                progressBar.visible(true)
+                Log.d("MockObject","added")
             }
             else -> throw Exception("mukhammadakbar.uz.SliderView",
                     Throwable("Error while loading image"))

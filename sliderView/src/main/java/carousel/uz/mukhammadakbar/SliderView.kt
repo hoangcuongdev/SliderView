@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import carousel.uz.mukhammadakbar.lib.R
@@ -45,7 +46,7 @@ class SliderView : RelativeLayout {
                 sliderHeight?.toInt()?: ViewGroup.LayoutParams.MATCH_PARENT)
         addView(viewpager)
         viewpager.offscreenPageLimit = 5
-        viewpager.setPageTransformer(true, ParallaxPageTransformer())
+        viewpager.setPageTransformer(true, DepthPageTransformer())
         viewpager.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
     }
 
@@ -63,9 +64,28 @@ class SliderView : RelativeLayout {
         invalidate()
     }
 
+    fun addMockObject(){
+        pagerAdapter.addMockObject(MockObject())
+        viewpager.adapter = pagerAdapter
+        Log.d("pagerAdapter", "adapter")
+        invalidate()
+    }
+
+    fun setImageMargin(margin: Int){
+        pagerAdapter.setImageMargin(margin)
+        invalidate()
+    }
+
+    fun hideBlurBackground(){
+        pagerAdapter.hideBlurBackground()
+        invalidate()
+    }
+
     private fun initViewpagerListener() {
         viewpager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
 
             override fun onPageSelected(position: Int) {
                 dotsLayout.selectDot(position)
