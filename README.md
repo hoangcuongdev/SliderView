@@ -1,4 +1,5 @@
 #  SliderView
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/acd047a964de46f59fa2c31fd75e55df)](https://app.codacy.com/app/markizdeviler/SliderView?utm_source=github.com&utm_medium=referral&utm_content=markizdeviler/SliderView&utm_campaign=Badge_Grade_Dashboard)
 [![](https://jitpack.io/v/markizdeviler/SliderView.svg)](https://jitpack.io/#markizdeviler/SliderView)
 
  Image Slider library
