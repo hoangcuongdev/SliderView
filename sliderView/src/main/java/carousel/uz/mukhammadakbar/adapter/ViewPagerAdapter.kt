@@ -36,7 +36,7 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
     private var imageList = ArrayList<Any>()
 
     private var margin: Int = 0
-    private var isBlurVisible = false
+    private var isBlurVisible = true
 
     override fun getCount(): Int = imageList.size
 
