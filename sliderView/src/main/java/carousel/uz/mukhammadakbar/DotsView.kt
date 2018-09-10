@@ -4,11 +4,13 @@ import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.widget.LinearLayout
 import carousel.uz.mukhammadakbar.lib.R
 
+/**
+ *  Dots Layout for [ViewPagerAdapter]
+ */
 class DotsView : LinearLayout {
 
     private val dots: ArrayList<CardView> = ArrayList()
@@ -42,6 +44,9 @@ class DotsView : LinearLayout {
         orientation = LinearLayout.HORIZONTAL
     }
 
+    /**
+     *  changes color of selected dot [index]
+     */
     fun selectDot(index: Int) {
         dots.mapIndexed { item, view -> view.setCardBackgroundColor(setColor(index == item)) }
     }
@@ -50,6 +55,10 @@ class DotsView : LinearLayout {
         return if (isSelected) selectedColor else defaultColor
     }
 
+
+    /**
+     *  creates [count] number of dots
+     */
     fun addDots(count: Int) {
         this.count = count
         for (i in 0 until count) {
@@ -73,6 +82,10 @@ class DotsView : LinearLayout {
         selectDot(0)
     }
 
+    /**
+     *  change dots [defaultColor] & [selectedColor]
+     *  by [Context.getColor]
+     */
     @Deprecated(message = "need to optimization, temporarily use this method")
     fun changeDotsColor(defaultColor: Int? = null, selectedColor: Int? = null){
         if (selectedColor != null) this.selectedColor = selectedColor

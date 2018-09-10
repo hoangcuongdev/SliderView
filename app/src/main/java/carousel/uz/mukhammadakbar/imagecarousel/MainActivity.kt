@@ -5,7 +5,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCarousels() {
-        sliderView.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.product_fake))
+        sliderView.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.ic_no_product))
         sliderView.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.product_fake2))
         sliderView.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.nature3))
     }

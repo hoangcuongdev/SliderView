@@ -16,9 +16,10 @@ class ZoomImageView(context: Context): AppCompatImageView(context){
         setOnClickListener { onClick() }
     }
 
-
-
-    fun onClick() {
+    /**
+     *  onDouble tap clicked change image scale (zoom image)
+     */
+    private fun onClick() {
         if (isDoubleTap) {
             if (!isScaled)
                 startAnimation(zoomAnimation(DEFAULT_SCALE, MAX_SCALE))
@@ -36,16 +37,14 @@ class ZoomImageView(context: Context): AppCompatImageView(context){
             duration = 300
         }
 
+    /**
+     *  for making image scale [DEFAULT_SCALE]
+     */
     fun setDefaultState(){
         if (!isScaled)
             startAnimation(zoomAnimation(DEFAULT_SCALE, DEFAULT_SCALE))
         else startAnimation(zoomAnimation(MAX_SCALE, DEFAULT_SCALE))
         isScaled = false
-    }
-
-    override fun performClick(): Boolean {
-        super.performClick()
-        return true
     }
 
     companion object {

@@ -24,6 +24,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import java.io.FileNotFoundException
 
+/**
+ *  Custom [PagerAdapter] for [ViewPager]
+ */
 class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
     private var imageList = ArrayList<Any>()
@@ -43,6 +46,10 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
         notifyDataSetChanged()
     }
 
+    /**
+     *  sets [ImageView] margin
+     *  topMargin = [margin] & bottomMargin = 2*[margin]
+     */
     fun setImageMargin(margin: Int){
         this.margin = margin
         notifyDataSetChanged()
@@ -50,7 +57,6 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
     fun addMockObject(mockObject: MockObject){
         imageList.add(mockObject)
-        Log.d("addMockObject", "addMockObject")
         notifyDataSetChanged()
     }
 
@@ -60,7 +66,6 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        Log.d("addMockObject", "instantiateItem")
         val root = FrameLayout(context).apply {
             layoutParams = FrameLayout
                     .LayoutParams(
@@ -124,7 +129,7 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
         }.also { root.addView(it) }
 
         when (imageList[position]) {
-            is Drawable -> {
+            is Drawable -> { 
                 progressBar.visible(false)
                 loadingText.visible(false)
                 imageView.setImageDrawable(imageList[position] as Drawable)
@@ -165,7 +170,6 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
             is MockObject -> {
                 //do Nothing
                 progressBar.visible(true)
-                Log.d("MockObject","added")
             }
             else -> throw Exception("mukhammadakbar.uz.SliderView",
                     Throwable("Error while loading image"))

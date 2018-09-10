@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import carousel.uz.mukhammadakbar.lib.R
@@ -64,10 +63,13 @@ class SliderView : RelativeLayout {
         invalidate()
     }
 
+    /**
+     *  works when [SliderView] loaded, till [addImage] function worked
+     *  shows loading view
+     */
     fun addMockObject(){
         pagerAdapter.addMockObject(MockObject())
         viewpager.adapter = pagerAdapter
-        Log.d("pagerAdapter", "adapter")
         invalidate()
     }
 
@@ -76,6 +78,9 @@ class SliderView : RelativeLayout {
         invalidate()
     }
 
+    /**
+     *  hides blur background of [SliderView] items
+     */
     fun hideBlurBackground(){
         pagerAdapter.hideBlurBackground()
         invalidate()
