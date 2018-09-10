@@ -1,4 +1,4 @@
-package carousel.uz.mukhammadakbar
+package carousel.uz.mukhammadakbar.animation
 
 import android.os.Build
 import android.support.v4.view.ViewPager
@@ -7,6 +7,7 @@ import android.view.View
 /**
  *  PageTransformer for [ViewPager]
  *  used [View.TRANSLATION_X] & [View.TRANSLATION_Y] & [ViewPager.TRANSLATION_Z]
+ *  modified by {@sample https://developer.android.com/training/animation/screen-slide}
  */
 class DepthPageTransformer : ViewPager.PageTransformer {
 
@@ -22,7 +23,7 @@ class DepthPageTransformer : ViewPager.PageTransformer {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     view.translationZ = 1f
                 }
-                view.translationY = 1f // fghj
+                view.translationY = 1f
 
                 view.scaleX = 1f
                 view.scaleY = 1f

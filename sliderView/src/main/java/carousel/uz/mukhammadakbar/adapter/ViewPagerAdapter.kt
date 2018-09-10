@@ -1,4 +1,4 @@
-package carousel.uz.mukhammadakbar
+package carousel.uz.mukhammadakbar.adapter
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -8,7 +8,6 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.AppCompatTextView
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,12 @@ import android.view.animation.RotateAnimation
 import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
+import carousel.uz.mukhammadakbar.views.BlurImageView
+import carousel.uz.mukhammadakbar.model.MockObject
+import carousel.uz.mukhammadakbar.views.ZoomImageView
+import carousel.uz.mukhammadakbar.exceptions.SliderViewException
 import carousel.uz.mukhammadakbar.lib.R
+import carousel.uz.mukhammadakbar.model.extensions.visible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -38,10 +42,13 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
     override fun isViewFromObject(p0: View, p1: Any): Boolean = p0 == p1
 
-    fun addImage(drawable: Drawable?=null,imageUrl: String?=null ,imageUrls: ArrayList<String>? =null) {
-        imageList.firstOrNull{it is MockObject}.also { imageList.remove(it) }
+    /**
+     *  adds Images to the [imageList]
+     *  you can add as Drawable and set image url
+     */
+    fun addImage(drawable: Drawable?=null,imageUrl: String?=null) {
+        imageList.firstOrNull{it is MockObject }.also { imageList.remove(it) }
         drawable?.let { imageList.add(it) }
-        imageUrls?.let {imageList.add(it) }
         imageUrl?.let { imageList.add(it) }
         notifyDataSetChanged()
     }
@@ -55,11 +62,18 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
         notifyDataSetChanged()
     }
 
+    /**
+     *  works after adapter called
+     *  shows loading view
+     */
     fun addMockObject(mockObject: MockObject){
         imageList.add(mockObject)
         notifyDataSetChanged()
     }
 
+    /**
+     *  change blur background visibility
+     */
     fun hideBlurBackground(){
         isBlurVisible = false
         notifyDataSetChanged()
@@ -128,19 +142,20 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
             text = context.getString(R.string.loading)
         }.also { root.addView(it) }
 
-        when (imageList[position]) {
-            is Drawable -> { 
+        val drawable = imageList[position]
+        when (drawable) {
+            is Drawable -> {
                 progressBar.visible(false)
                 loadingText.visible(false)
-                imageView.setImageDrawable(imageList[position] as Drawable)
-                backgroundView.setImageDrawable(imageList[position] as Drawable)
+                imageView.setImageDrawable(drawable)
+                backgroundView.setImageDrawable(drawable)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     backgroundView.setBlur()
                 }
             }
             is String -> {
-                if (URLUtil.isValidUrl(imageList[position] as String)) {
-                    Glide.with(context).load(imageList[position])
+                if (URLUtil.isValidUrl(drawable)) {
+                    Glide.with(context).load(drawable)
                             .listener(object : RequestListener<Drawable> {
                                 override fun onLoadFailed(exc: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                     if (exc?.causes?.any { it is FileNotFoundException } == true) {
@@ -163,22 +178,22 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                                 }
                             }).into(imageView)
                 } else
-                    throw Exception("mukhammadakbar.uz.SliderView",
-                            Throwable("Image url is not valid, check image url"))
+                    throw SliderViewException(throwable = Throwable("Image url is not valid, check image url"))
             }
 
             is MockObject -> {
                 //do Nothing
                 progressBar.visible(true)
             }
-            else -> throw Exception("mukhammadakbar.uz.SliderView",
-                    Throwable("Error while loading image"))
+            else -> throw SliderViewException(throwable = Throwable("Error while loading image"))
         }
         container.addView(root)
         return root
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        (container as ViewPager).removeView(`object` as View)
+        if (container is ViewPager && `object` is View) {
+            (container).removeView(`object`)
+        }
     }
 }

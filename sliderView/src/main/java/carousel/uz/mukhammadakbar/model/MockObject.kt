@@ -1,4 +1,4 @@
-package carousel.uz.mukhammadakbar
+package carousel.uz.mukhammadakbar.model
 
 /**
  * no need to set hasMock [Boolean] item

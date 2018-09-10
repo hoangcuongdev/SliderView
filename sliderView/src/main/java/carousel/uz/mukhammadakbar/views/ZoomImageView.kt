@@ -1,12 +1,13 @@
-package carousel.uz.mukhammadakbar
+package carousel.uz.mukhammadakbar.views
 
 import android.content.Context
 import android.support.v7.widget.AppCompatImageView
-import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 
+/**
+ *  changes image size on double tap
+ */
 class ZoomImageView(context: Context): AppCompatImageView(context){
 
     private var isDoubleTap: Boolean = false
@@ -16,9 +17,6 @@ class ZoomImageView(context: Context): AppCompatImageView(context){
         setOnClickListener { onClick() }
     }
 
-    /**
-     *  onDouble tap clicked change image scale (zoom image)
-     */
     private fun onClick() {
         if (isDoubleTap) {
             if (!isScaled)

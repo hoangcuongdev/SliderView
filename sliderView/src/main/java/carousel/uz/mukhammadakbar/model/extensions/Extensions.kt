@@ -1,4 +1,4 @@
-package carousel.uz.mukhammadakbar
+package carousel.uz.mukhammadakbar.model.extensions
 
 import android.view.View
 

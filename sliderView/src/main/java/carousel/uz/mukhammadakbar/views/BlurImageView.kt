@@ -1,4 +1,4 @@
-package carousel.uz.mukhammadakbar
+package carousel.uz.mukhammadakbar.views
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,9 +13,16 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.support.annotation.RequiresApi
 import android.support.v7.widget.AppCompatImageView
 
-
+/**
+ *  setting images Blur effect
+ *  works on [Build.VERSION_CODES] > 16
+ */
 class BlurImageView(context: Context) : AppCompatImageView(context) {
 
+    /**
+     *  set Blur effect
+     *  [ScriptIntrinsicBlur] requires [Build.VERSION_CODES] 17
+     */
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     fun setBlur() {
         val drawable = getBitmapDrawable(drawable)
@@ -24,10 +31,6 @@ class BlurImageView(context: Context) : AppCompatImageView(context) {
         setImageBitmap(blurred)
     }
 
-    /**
-     *  this function prevents showing an error
-     *  if drawable is VectorDrawable
-     */
     private fun getBitmapDrawable(drawable: Drawable): BitmapDrawable? {
         return try {
             val bitmap: Bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -41,7 +44,6 @@ class BlurImageView(context: Context) : AppCompatImageView(context) {
             null
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun blurRenderScript(originalBitmap: Bitmap, radius: Int): Bitmap {
@@ -64,9 +66,6 @@ class BlurImageView(context: Context) : AppCompatImageView(context) {
         return bitmap
     }
 
-    /**
-     *  change bitmap to argb888 to rgb565 [Bitmap.Config]
-     */
     private fun rgbToArgb(img: Bitmap): Bitmap {
         val numPixels = img.width * img.height
         val pixels = IntArray(numPixels)

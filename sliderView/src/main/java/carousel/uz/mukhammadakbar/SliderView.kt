@@ -7,8 +7,16 @@ import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import carousel.uz.mukhammadakbar.adapter.ViewPagerAdapter
+import carousel.uz.mukhammadakbar.animation.DepthPageTransformer
 import carousel.uz.mukhammadakbar.lib.R
+import carousel.uz.mukhammadakbar.model.MockObject
+import carousel.uz.mukhammadakbar.views.DotsView
 
+/**
+ *  @author Rafiqov Mukhammadakbar (aka markizdeviler)
+ *  Image sliding library
+ */
 class SliderView : RelativeLayout {
 
     private val viewpager = ViewPager(context)
@@ -73,13 +81,17 @@ class SliderView : RelativeLayout {
         invalidate()
     }
 
+    /**
+     *  sets Image top & bottom margin
+     *  not to the ViewPager
+     */
     fun setImageMargin(margin: Int){
         pagerAdapter.setImageMargin(margin)
         invalidate()
     }
 
     /**
-     *  hides blur background of [SliderView] items
+     *  hides blur background of [ViewPager] items
      */
     fun hideBlurBackground(){
         pagerAdapter.hideBlurBackground()
@@ -102,8 +114,12 @@ class SliderView : RelativeLayout {
         })
     }
 
-    fun addImage(drawable: Drawable?=null,imageUrl: String?=null ,imageUrls: ArrayList<String>? =null){
-        pagerAdapter.addImage(drawable, imageUrl, imageUrls)
+    /**
+     *  adds Images to the ViewPager
+     *  you can add as Drawable and set image url
+     */
+    fun addImage(drawable: Drawable?=null,imageUrl: String?=null){
+        pagerAdapter.addImage(drawable, imageUrl)
         viewpager.adapter = pagerAdapter
         dotsLayout.addDots(pagerAdapter.count)
         invalidate()
