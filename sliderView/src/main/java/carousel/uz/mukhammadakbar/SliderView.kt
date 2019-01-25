@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.Toast
 import carousel.uz.mukhammadakbar.adapter.ViewPagerAdapter
 import carousel.uz.mukhammadakbar.animation.DepthPageTransformer
 import carousel.uz.mukhammadakbar.lib.R
@@ -15,6 +16,7 @@ import carousel.uz.mukhammadakbar.views.DotsView
 
 /**
  *  @author Rafiqov Mukhammadakbar (aka markizdeviler)
+ *  @modify GreenLove
  *  Image sliding library
  */
 class SliderView : RelativeLayout {
@@ -23,6 +25,8 @@ class SliderView : RelativeLayout {
     private lateinit var dotsLayout : DotsView
     private var pagerAdapter: ViewPagerAdapter = ViewPagerAdapter(context)
     private var sliderHeight: Float? = null
+    var setOnSliderItemClickListener: (Any) -> Unit = { }
+
 
     constructor(context: Context)
             : super(context) { init(context, null) }
@@ -106,6 +110,8 @@ class SliderView : RelativeLayout {
 
             override fun onPageSelected(position: Int) {
                 dotsLayout.selectDot(position)
+//                pagerAdapter.clickListener = {data -> Toast.makeText(context,"$data",Toast.LENGTH_SHORT).show()}
+                pagerAdapter.clickListener = {data -> setOnSliderItemClickListener(data)}
             }
 
             override fun onPageScrollStateChanged(state: Int) {

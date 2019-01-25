@@ -3,10 +3,12 @@ package carousel.uz.mukhammadakbar.imagecarousel
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  *  @author Rafiqov Mukhammadakbar (aka markizdeviler)
+ *  @modify GreenLove
  */
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initCarousel()
+        sliderView.setOnSliderItemClickListener = {data -> Toast.makeText(this,"Click|===> $data",Toast.LENGTH_SHORT).show()}
     }
 
     private fun initCarousel() {

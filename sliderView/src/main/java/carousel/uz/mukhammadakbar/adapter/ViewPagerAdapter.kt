@@ -33,12 +33,15 @@ import java.io.FileNotFoundException
  */
 class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
 
-    private var imageList = ArrayList<Any>()
+    var imageList = ArrayList<Any>()
 
     private var margin: Int = 0
     private var isBlurVisible = true
 
+    internal var clickListener: (Any) -> Unit = { }
+
     override fun getCount(): Int = imageList.size
+
 
     override fun isViewFromObject(p0: View, p1: Any): Boolean = p0 == p1
 
@@ -152,6 +155,7 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     backgroundView.setBlur()
                 }
+                imageView.setOnClickListener { clickListener(drawable) }
             }
             is String -> {
                 if (URLUtil.isValidUrl(drawable)) {
@@ -177,6 +181,7 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
                                     return false
                                 }
                             }).into(imageView)
+                    imageView.setOnClickListener { clickListener(drawable) }
                 } else
                     throw SliderViewException(throwable = Throwable("Image url is not valid, check image url"))
             }
