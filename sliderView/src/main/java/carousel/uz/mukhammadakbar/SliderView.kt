@@ -102,6 +102,10 @@ class SliderView : RelativeLayout {
         pagerAdapter.hideBlurBackground()
         invalidate()
     }
+    fun clearImages(){
+        pagerAdapter.imageList.clear()
+        invalidate()
+    }
 
     private fun initViewpagerListener() {
         viewpager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
