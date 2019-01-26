@@ -49,6 +49,7 @@ class SliderView : RelativeLayout {
         addViewPager()
         addDotsLayout()
         initViewpagerListener()
+        pagerAdapter.clickListener = {data -> setOnSliderItemClickListener(data)}
     }
 
     private fun addViewPager() {
@@ -110,8 +111,6 @@ class SliderView : RelativeLayout {
 
             override fun onPageSelected(position: Int) {
                 dotsLayout.selectDot(position)
-//                pagerAdapter.clickListener = {data -> Toast.makeText(context,"$data",Toast.LENGTH_SHORT).show()}
-                pagerAdapter.clickListener = {data -> setOnSliderItemClickListener(data)}
             }
 
             override fun onPageScrollStateChanged(state: Int) {
