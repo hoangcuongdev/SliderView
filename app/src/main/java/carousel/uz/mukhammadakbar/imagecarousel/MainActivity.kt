@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private fun initCarousel() {
         sliderView.setImageMargin(15)
         sliderView.addMockObject()
-        sliderView.addImage(imageUrl = "http://apibazarway.wienerdeming.com/media/file/image/2018-08/948321c9-db06-4c78-a7e7-aba36e2208ef.jpg")
+        sliderView.addImage(imageUrl = "http://dev.amduongnguhanh.vn/upload/items/2019.04.26/video/1556250863_24.mp4")
         sliderView.addImage(imageUrl = "http://apibazarway.wienerdeming.com/media/file/image/2018-08/91c984bc-e7a3-42a2-8c32-2e88ebb5c045.jpg")
         sliderView.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.ic_no_product))
         sliderView.addImage(drawable = ContextCompat.getDrawable(applicationContext, R.drawable.nature1))

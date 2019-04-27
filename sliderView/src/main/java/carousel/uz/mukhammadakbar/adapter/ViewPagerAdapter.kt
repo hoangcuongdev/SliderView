@@ -1,6 +1,7 @@
 package carousel.uz.mukhammadakbar.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
@@ -22,6 +23,7 @@ import carousel.uz.mukhammadakbar.views.ZoomImageView
 import carousel.uz.mukhammadakbar.exceptions.SliderViewException
 import carousel.uz.mukhammadakbar.lib.R
 import carousel.uz.mukhammadakbar.model.extensions.visible
+import carousel.uz.mukhammadakbar.utils.VideoThumbnailUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -159,7 +161,13 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
             }
             is String -> {
                 if (URLUtil.isValidUrl(drawable)) {
-                    Glide.with(context).load(drawable)
+                    var bmp: Bitmap? = null
+                    if(drawable.contains(".mp4")){
+                        bmp = VideoThumbnailUtils.retriveVideoFrameFromVideo(drawable)
+                    }
+                    val inputImage = bmp ?: drawable
+
+                    Glide.with(context).load(inputImage)
                             .listener(object : RequestListener<Drawable> {
                                 override fun onLoadFailed(exc: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                     if (exc?.causes?.any { it is FileNotFoundException } == true) {
@@ -201,4 +209,5 @@ class ViewPagerAdapter(private val context: Context) : PagerAdapter() {
             (container).removeView(`object`)
         }
     }
+
 }
